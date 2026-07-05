@@ -1,0 +1,176 @@
+.profilePage { animation: fadeIn 0.5s ease; }
+
+.pageHeader { margin-bottom: var(--space-6); }
+.pageHeader h2 { font-size: var(--fs-2xl); }
+
+.profileGrid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--space-6);
+}
+
+.profileSidebar {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  padding: var(--space-6);
+  text-align: center;
+  height: fit-content;
+}
+
+.avatarLarge {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-extrabold);
+  margin: 0 auto var(--space-4);
+  box-shadow: var(--shadow-lg);
+}
+
+.profileSidebar h3 { font-size: var(--fs-lg); margin-bottom: var(--space-1); }
+.profileSidebar p { font-size: var(--fs-sm); color: var(--color-text-muted); margin-bottom: var(--space-4); }
+
+.profileStats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.profileStat {
+  padding: var(--space-2);
+}
+
+.profileStat h4 { font-size: var(--fs-lg); font-weight: var(--fw-extrabold); color: var(--color-primary); }
+.profileStat p { font-size: var(--fs-xs); color: var(--color-text-muted); }
+
+.profileContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.section {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  padding: var(--space-6);
+}
+
+.section h3 {
+  font-size: var(--fs-md);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+}
+
+.formGroup { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.formGroup label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-primary);
+}
+
+.formInput {
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-sm);
+  transition: border-color var(--transition-fast);
+  color: var(--color-text-primary);
+}
+
+.formInput:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.toggleRow:last-child { border-bottom: none; }
+
+.toggleInfo h4 { font-size: var(--fs-sm); font-weight: var(--fw-medium); }
+.toggleInfo p { font-size: var(--fs-xs); color: var(--color-text-muted); }
+
+.toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  position: relative;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  border: none;
+}
+
+.toggle.active { background: var(--color-primary); }
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  transition: transform var(--transition-fast);
+  box-shadow: var(--shadow-xs);
+}
+
+.toggle.active::after { transform: translateX(20px); }
+
+.goalTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.goalTag {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.removeTag {
+  cursor: pointer;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.removeTag:hover { opacity: 1; }
+
+.saveBtn { margin-top: var(--space-4); }
+
+@media (max-width: 768px) {
+  .profileGrid { grid-template-columns: 1fr; }
+  .formGrid { grid-template-columns: 1fr; }
+}
