@@ -33,8 +33,14 @@ export default function Register() {
     try {
       await register({ name: form.name, email: form.email, password: form.password });
       navigate('/dashboard');
-    } catch {
-      setErrors({ general: 'Registration failed. Please try again.' });
+    } catch (err) {
+      console.error("Registration error:", err.response?.data || err);
+      const errorMessage = err.response?.data?.non_field_errors?.[0] ||
+                           err.response?.data?.username?.[0] || 
+                           err.response?.data?.email?.[0] || 
+                           err.response?.data?.detail || 
+                           'Registration failed. Please try again.';
+      setErrors({ general: errorMessage });
     }
     setLoading(false);
   };
@@ -54,6 +60,12 @@ export default function Register() {
       <div className={styles.divider}><span>or register with email</span></div>
 
       <form onSubmit={handleSubmit}>
+        {errors.general && (
+          <div className={styles.errorText} style={{ textAlign: 'center', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '0.5rem' }}>
+            {errors.general}
+          </div>
+        )}
+
         <div className={styles.formGroup}>
           <label>Full Name</label>
           <div className={styles.inputWrapper}>

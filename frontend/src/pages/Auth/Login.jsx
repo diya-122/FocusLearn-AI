@@ -32,7 +32,11 @@ export default function Login() {
       await login(form.email, form.password);
       navigate('/dashboard');
     } catch (err) {
-      setErrors({ general: 'Login failed. Please try again.' });
+      console.error("Login error:", err.response?.data || err);
+      const errorMessage = err.response?.data?.non_field_errors?.[0] ||
+                           err.response?.data?.detail || 
+                           'Login failed. Please check your credentials and try again.';
+      setErrors({ general: errorMessage });
     }
     setLoading(false);
   };
@@ -56,6 +60,12 @@ export default function Login() {
       <div className={styles.divider}><span>or continue with email</span></div>
 
       <form onSubmit={handleSubmit}>
+        {errors.general && (
+          <div className={styles.errorText} style={{ textAlign: 'center', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '0.5rem' }}>
+            {errors.general}
+          </div>
+        )}
+
         <div className={styles.formGroup}>
           <label>Email Address</label>
           <div className={styles.inputWrapper}>

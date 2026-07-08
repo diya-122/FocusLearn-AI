@@ -188,7 +188,17 @@ class ImportVideoView(APIView):
                     transcript_text = " ".join([snippet.text for snippet in fetched])
             except Exception as e:
                 print(f"Transcript extraction failed: {e}")
-                
+                try:
+                    import yt_dlp
+                    ydl_opts = {'quiet': True, 'skip_download': True}
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        info = ydl.extract_info(video_url, download=False)
+                        description = info.get('description', '')
+                        if description:
+                            transcript_text = description
+                            print("Successfully fetched video description via yt-dlp as fallback.")
+                except Exception as ex:
+                    print(f"yt-dlp fallback failed: {ex}")
             if thumbnail_url:
                 try:
                     import urllib.request
