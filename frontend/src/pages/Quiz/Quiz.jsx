@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaClock, FaCheckCircle, FaTimesCircle, FaLightbulb, FaSpinner } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti';
 import quizService from '../../services/quizService';
 import styles from './Quiz.module.css';
 
@@ -52,11 +54,8 @@ export default function Quiz() {
     try {
       const res = await quizService.submit(id, answers);
       
-      // The backend returns the final score based on its calculation
       const finalScore = (res.data.score / quiz.total_marks) * 100;
       
-      // Since we don't have detailed answers on the frontend, we'll just show the final score
-      // and fake some generic weak areas based on the score for the UI layout.
       setResults({
         score: Math.round(finalScore) || 0,
         correct: Math.round((finalScore / 100) * quiz.questions.length) || 0,
@@ -65,6 +64,15 @@ export default function Quiz() {
         weakAreas: finalScore < 100 ? ['Review missed concepts in the lesson'] : [],
       });
       setSubmitted(true);
+
+      if (finalScore >= 80) {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#4F46E5', '#10B981', '#F59E0B']
+        });
+      }
     } catch (e) {
       console.error(e);
       alert('Failed to submit quiz.');
@@ -76,13 +84,24 @@ export default function Quiz() {
   if (submitted && results) {
     const bg = results.score >= 80 ? 'var(--gradient-accent)' : results.score >= 50 ? 'var(--gradient-primary)' : 'linear-gradient(135deg, #EF4444, #DC2626)';
     return (
-      <div className={styles.quizPage}>
+      <motion.div 
+        className={styles.quizPage}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className={styles.quizContainer}>
           <div className={styles.results}>
-            <div className={styles.scoreCircle} style={{ background: bg }}>
+            <motion.div 
+              className={styles.scoreCircle} 
+              style={{ background: bg }}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
+            >
               <span className={styles.scoreValue}>{results.score}%</span>
               <span className={styles.scoreLabel}>Score</span>
-            </div>
+            </motion.div>
             <h2>{results.score >= 80 ? '🎉 Excellent!' : results.score >= 50 ? '👍 Good job!' : '📚 Keep Practicing!'}</h2>
             <p style={{ marginTop: 'var(--space-2)', fontSize: 'var(--fs-sm)' }}>
               You answered {results.correct} out of {results.total} questions correctly.
@@ -135,12 +154,17 @@ export default function Quiz() {
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className={styles.quizPage}>
+    <motion.div 
+      className={styles.quizPage}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div className={styles.quizContainer}>
         <div className={styles.quizHeader}>
           <h2>{quiz.title}</h2>
@@ -154,37 +178,55 @@ export default function Quiz() {
           </span>
         </div>
         <div className={styles.progressTrack}>
-          <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+          <motion.div 
+            className={styles.progressFill} 
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }} 
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+          />
         </div>
 
-        <div className={styles.questionCard}>
-          <div className={styles.questionNumber}>
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={currentQ}
+            className={styles.questionCard}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className={styles.questionNumber}>
             {question.question_type === 'mcq' ? 'Multiple Choice' : 'True or False'}
           </div>
           <h3 className={styles.questionText}>{question.question_text}</h3>
 
-          <div className={styles.options}>
-            {question.question_type === 'mcq' ? (
-              (question.options_json || []).map((opt, i) => (
-                <div key={i}
-                  className={`${styles.option} ${answers[question.id] === i ? styles.selected : ''}`}
-                  onClick={() => handleSelect(i)}>
-                  <span className={styles.optionLabel}>{String.fromCharCode(65 + i)}</span>
-                  {opt}
-                </div>
-              ))
-            ) : (
-              ['True', 'False'].map((opt, i) => (
-                <div key={i}
-                  className={`${styles.option} ${answers[question.id] === i ? styles.selected : ''}`}
-                  onClick={() => handleSelect(i)}>
-                  <span className={styles.optionLabel}>{opt[0]}</span>
-                  {opt}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+            <div className={styles.options}>
+              {question.question_type === 'mcq' ? (
+                (question.options_json || []).map((opt, i) => (
+                  <motion.div key={i}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`${styles.option} ${answers[question.id] === i ? styles.selected : ''}`}
+                    onClick={() => handleSelect(i)}>
+                    <span className={styles.optionLabel}>{String.fromCharCode(65 + i)}</span>
+                    {opt}
+                  </motion.div>
+                ))
+              ) : (
+                ['True', 'False'].map((opt, i) => (
+                  <motion.div key={i}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`${styles.option} ${answers[question.id] === i ? styles.selected : ''}`}
+                    onClick={() => handleSelect(i)}>
+                    <span className={styles.optionLabel}>{opt[0]}</span>
+                    {opt}
+                  </motion.div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
         <div className={styles.navigation}>
           <button className={`${styles.navBtn} ${styles.prevBtn}`}
@@ -205,6 +247,6 @@ export default function Quiz() {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

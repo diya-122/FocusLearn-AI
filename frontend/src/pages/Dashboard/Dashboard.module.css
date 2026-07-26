@@ -45,11 +45,25 @@
   display: flex;
   align-items: flex-start;
   gap: var(--space-4);
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: currentColor;
+  opacity: 0.8;
 }
 
 .statCard:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.08);
+  border-color: rgba(79, 70, 229, 0.2);
 }
 
 .statIcon {
@@ -86,6 +100,20 @@
 
 .statUp { color: var(--color-accent); }
 .statDown { color: var(--color-danger); }
+
+.analyticsSection {
+  margin-bottom: var(--space-6);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  padding: var(--space-5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.chartContainer {
+  margin-top: var(--space-4);
+  width: 100%;
+}
 
 .dashGrid {
   display: grid;

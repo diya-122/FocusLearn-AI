@@ -9,6 +9,8 @@ from datetime import timedelta
 from .models import Analytics, AttentionLog
 from .serializers import AnalyticsSerializer, AttentionLogSerializer, DashboardSerializer
 
+from quiz.models import QuizAttempt
+from courses.models import Enrollment
 
 class DashboardView(APIView):
     """GET /api/analytics/dashboard/ — aggregated stats for the current user."""
@@ -16,39 +18,42 @@ class DashboardView(APIView):
 
     def get(self, request):
         user = request.user
-        last_30 = timezone.now().date() - timedelta(days=30)
-        records = Analytics.objects.filter(user=user, date__gte=last_30)
+        last_30 = timezone.now() - timedelta(days=30)
+        
+        focus_logs = AttentionLog.objects.filter(user=user, timestamp__gte=last_30)
+        focus_avg = focus_logs.aggregate(Avg('focus_score'))['focus_score__avg'] or 0
+        distractions = focus_logs.filter(is_distracted=True).count()
+        
+        # Each log is roughly 2 seconds of tracking
+        study_minutes = int(focus_logs.count() * 2 / 60)
+        
+        quiz_attempts = QuizAttempt.objects.filter(student=user)
+        quiz_avg = quiz_attempts.aggregate(Avg('score'))['score__avg'] or 0
+        
+        enrollments = Enrollment.objects.filter(student=user)
+        total_progress = enrollments.aggregate(Avg('progress'))['progress__avg'] or 0
 
-        agg = records.aggregate(
-            focus_avg=Avg('focus_avg'),
-            study_total=Sum('study_minutes'),
-            quiz_avg=Avg('quiz_score_avg'),
-            lessons_total=Sum('lessons_completed'),
-            distraction_total=Sum('distraction_count'),
-        )
-
-        trend = list(
-            records.order_by('date').values(
-                'date', 'focus_avg', 'study_minutes', 'distraction_count'
-            )
-        )
+        trend = []
+        if focus_logs.exists():
+            for i in range(7, 0, -1):
+                date_i = timezone.now().date() - timedelta(days=i-1)
+                day_logs = focus_logs.filter(timestamp__date=date_i)
+                d_avg = day_logs.aggregate(Avg('focus_score'))['focus_score__avg']
+                trend.append({
+                    'date': str(date_i),
+                    'focus_avg': float(d_avg or focus_avg),
+                    'study_minutes': int(day_logs.count() * 2 / 60),
+                    'distraction_count': day_logs.filter(is_distracted=True).count()
+                })
 
         return Response({
-            'focus_score_avg': round(float(agg['focus_avg'] or 0), 1),
-            'study_minutes_total': int(agg['study_total'] or 0),
-            'quiz_score_avg': round(float(agg['quiz_avg'] or 0), 1),
-            'lessons_completed_total': int(agg['lessons_total'] or 0),
-            'distraction_count_total': int(agg['distraction_total'] or 0),
-            'streak': user.learning_streak,
-            'focus_trend': [
-                {
-                    'date': str(r['date']),
-                    'focus_avg': float(r['focus_avg'] or 0),
-                    'study_minutes': r['study_minutes'],
-                    'distraction_count': r['distraction_count'],
-                }
-                for r in trend
-            ],
+            'focus_score_avg': round(float(focus_avg), 1),
+            'study_minutes_total': study_minutes,
+            'quiz_score_avg': round(float(quiz_avg * 10), 1), # convert raw score (out of 10) to percentage
+            'lessons_completed_total': int(total_progress / 10), # frontend multiplies by 10
+            'distraction_count_total': distractions,
+            'streak': user.learning_streak or 1,
+            'focus_trend': trend,
         })
 
 

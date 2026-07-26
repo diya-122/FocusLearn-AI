@@ -5,26 +5,28 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import SearchBar from '../components/SearchBar/SearchBar';
 import NotificationPanel from '../components/NotificationPanel/NotificationPanel';
 import UserProfileDropdown from '../components/UserProfileDropdown/UserProfileDropdown';
+import LanguageSwitcher from '../components/LanguageSwitcher/LanguageSwitcher';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import styles from './DashboardLayout.module.css';
-
-const pageTitles = {
-  '/dashboard': 'Dashboard',
-  '/courses': 'Course Catalog',
-  '/summaries': 'AI Reports',
-  '/analytics': 'Analytics',
-  '/quizzes': 'Quizzes',
-  '/instructor': 'Instructor Dashboard',
-  '/profile': 'Profile',
-};
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState('');
   const { theme, toggleTheme } = useTheme();
+  const { t } = useLanguage();
   const location = useLocation();
 
-  const title = pageTitles[location.pathname] || 'Dashboard';
+  const pageTitles = {
+    '/dashboard': t('sidebar_dashboard'),
+    '/courses':   t('sidebar_my_lessons'),
+    '/summaries': t('sidebar_ai_reports'),
+    '/analytics': t('sidebar_analytics'),
+    '/quizzes':   t('sidebar_quizzes'),
+    '/profile':   t('sidebar_profile'),
+  };
+
+  const title = pageTitles[location.pathname] || t('sidebar_dashboard');
 
   return (
     <div className={styles.dashLayout}>
@@ -37,6 +39,7 @@ export default function DashboardLayout() {
             <SearchBar value={search} onChange={setSearch} placeholder="Search anything..." />
           </div>
           <div className={styles.topNavRight}>
+            <LanguageSwitcher />
             <button
               className="theme-toggle-btn"
               onClick={toggleTheme}
@@ -51,7 +54,7 @@ export default function DashboardLayout() {
         </header>
 
         <div className={styles.dashContent}>
-          <Outlet />
+          <Outlet context={{ search }} />
         </div>
       </div>
     </div>

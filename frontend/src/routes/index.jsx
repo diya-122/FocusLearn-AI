@@ -14,6 +14,8 @@ import QuizList from '../pages/QuizList/QuizList';
 import Quiz from '../pages/Quiz/Quiz';
 import Analytics from '../pages/Analytics/Analytics';
 import Profile from '../pages/Profile/Profile';
+import Calendar from '../pages/Calendar/Calendar';
+import Notes from '../pages/Notes/Notes';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +42,8 @@ const router = createBrowserRouter([
       { path: '/quizzes/:id', element: <Quiz /> },
       { path: '/analytics', element: <Analytics /> },
       { path: '/profile', element: <Profile /> },
+      { path: '/calendar', element: <Calendar /> },
+      { path: '/notes', element: <Notes /> },
     ],
   },
 ]);

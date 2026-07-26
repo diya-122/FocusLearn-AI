@@ -29,7 +29,11 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('focuslearn_token');
       localStorage.removeItem('focuslearn_user');
-      window.location.href = '/login';
+      
+      const publicPaths = ['/', '/login', '/register'];
+      if (!publicPaths.includes(window.location.pathname)) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

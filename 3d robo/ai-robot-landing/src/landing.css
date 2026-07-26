@@ -1,0 +1,278 @@
+/* ── Root layout ────────────────────────────────────────────────────────── */
+.app-root {
+  width: 100vw;
+  height: 100vh;
+  background: #080d1a;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Brainfuck rain canvas sits at z-index 0 (set in component) ─────────── */
+
+/* ── 3D robot canvas — full screen behind UI ────────────────────────────── */
+.robot-canvas {
+  position: absolute !important;
+  top: 0;
+  right: -8%;
+  width: 65% !important;
+  height: 100% !important;
+  z-index: 1;
+}
+
+/* ── Landing UI — left side ──────────────────────────────────────────────── */
+.landing-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none; /* let mouse pass to canvas by default */
+}
+
+/* re-enable pointer events only on interactive elements */
+.landing-ui nav,
+.landing-ui .hero-content {
+  pointer-events: all;
+}
+
+/* ── Navbar ──────────────────────────────────────────────────────────────── */
+.landing-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 3rem;
+  gap: 2rem;
+}
+
+.nav-logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #e8edf8;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.nav-dot {
+  color: #38bdf8;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  margin-left: 1rem;
+}
+
+.nav-links a {
+  color: #8a9bb8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #e8edf8;
+}
+
+.btn-nav-cta {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.5rem 1.3rem;
+  border-radius: 50px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-nav-cta:hover {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: rgba(56, 189, 248, 0.6);
+}
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 0 3rem;
+  max-width: 52%;
+  flex: 1;
+  padding-bottom: 4rem;
+}
+
+/* Badge pill */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #7dd3fc;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.38rem 1rem;
+  border-radius: 50px;
+  width: fit-content;
+}
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Headline */
+.hero-title {
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #e8edf8;
+  letter-spacing: -0.03em;
+}
+
+.text-teal {
+  color: #2dd4bf;
+}
+
+.text-yellow {
+  color: #fbbf24;
+}
+
+/* Description */
+.hero-desc {
+  font-size: 1.05rem;
+  color: #8a9bb8;
+  line-height: 1.7;
+  max-width: 38rem;
+}
+
+/* Buttons */
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-primary {
+  background: rgba(56, 189, 248, 0.15);
+  color: #e8edf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 0.75rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.btn-primary:hover {
+  background: rgba(56, 189, 248, 0.28);
+  border-color: rgba(56, 189, 248, 0.65);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #8a9bb8;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+  padding: 0.75rem 0.5rem;
+}
+
+.btn-secondary:hover {
+  color: #e8edf8;
+}
+
+/* Stats row */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  margin-top: 0.5rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat-num {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #e8edf8;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: #5a6a84;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 2.4rem;
+  background: rgba(255,255,255,0.08);
+}
+
+/* ── Vignette ────────────────────────────────────────────────────────────── */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  /* left fade to blend text with scene */
+  background:
+    linear-gradient(to right, #080d1a 0%, #080d1a 24%, rgba(8,13,26,0.55) 46%, transparent 62%),
+    /* bottom fade */
+    linear-gradient(to top, rgba(8,13,26,0.7) 0%, transparent 18%),
+    /* edge darkening */
+    radial-gradient(ellipse at 70% 50%, transparent 38%, rgba(8,13,26,0.6) 100%);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .robot-canvas {
+    width: 100% !important;
+    right: 0;
+    opacity: 0.45;
+  }
+
+  .hero-content {
+    max-width: 100%;
+    padding: 0 1.5rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .landing-nav {
+    padding: 1.2rem 1.5rem;
+  }
+}

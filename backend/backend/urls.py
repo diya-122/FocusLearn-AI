@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/quiz/', include('quiz.urls')),
     path('api/analytics/', include('analytics.urls')),
     path('api/notifications/', include('notifications.urls')),
+    path('api/planner/', include('planner.urls')),
 ]
 
 # Serve media files in development

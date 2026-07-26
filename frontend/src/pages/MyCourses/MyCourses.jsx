@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { FaBookOpen, FaPlay, FaTrash } from 'react-icons/fa';
 import courseService from '../../services/courseService';
 import { getTopicImage } from '../../utils/getTopicImage';
@@ -9,6 +9,14 @@ export default function MyCourses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { search } = useOutletContext() || { search: '' };
+
+  const filteredCourses = courses.filter(course => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return course.title.toLowerCase().includes(q) || 
+           (course.category && course.category.toLowerCase().includes(q));
+  });
 
   useEffect(() => {
     courseService.getEnrolled().then(res => {
@@ -34,9 +42,13 @@ export default function MyCourses() {
           <p>You haven't imported any videos or enrolled in any courses yet.</p>
           <button className="btn btn-primary" onClick={() => navigate('/dashboard')}>Go to Dashboard to Import</button>
         </div>
+      ) : filteredCourses.length === 0 ? (
+        <div className={styles.empty}>
+          <p>No lessons found matching "{search}"</p>
+        </div>
       ) : (
         <div className={styles.grid}>
-          {courses.map(course => (
+          {filteredCourses.map(course => (
             <div key={course.id} className={styles.card} style={{ position: 'relative' }} onClick={() => {
               if (course.first_lesson_id) {
                 navigate(`/course/${course.first_lesson_id}`);

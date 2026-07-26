@@ -82,8 +82,16 @@ export default function VideoPlayer({ onTimeUpdate, videoUrl, videoFile, contain
   };
 
   const ytEmbedUrl = getYouTubeEmbedUrl(videoUrl);
-  const mediaSrc = videoUrl || (videoFile ? `http://127.0.0.1:8000${videoFile}` : 'https://www.w3schools.com/html/mov_bbb.mp4');
-
+  
+  const getMediaSrc = () => {
+    if (videoUrl && !ytEmbedUrl) return videoUrl;
+    if (videoFile) {
+      if (videoFile.startsWith('http')) return videoFile;
+      return `http://127.0.0.1:8000${videoFile.startsWith('/') ? '' : '/'}${videoFile}`;
+    }
+    return 'https://www.w3schools.com/html/mov_bbb.mp4';
+  };
+  const mediaSrc = getMediaSrc();
   return (
     <div className={styles.playerWrapper}>
       {ytEmbedUrl ? (

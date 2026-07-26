@@ -28,11 +28,15 @@ body {
   font-weight: var(--fw-regular);
   line-height: var(--lh-normal);
   color: var(--color-text-primary);
-  background-color: var(--color-bg);
+  background: radial-gradient(at 0% 0%, #F5F7FF 0px, transparent 50%),
+              radial-gradient(at 50% 0%, #FCF9F2 0px, transparent 50%),
+              radial-gradient(at 100% 0%, #EEFDF7 0px, transparent 50%),
+              #F8FAFC;
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  transition: background-color var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
 }
 
 /* Typography */
